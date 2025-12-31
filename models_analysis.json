@@ -1,0 +1,360 @@
+{
+  "models": {
+    "fan": {
+      "name": "Fan",
+      "category": "electric_apppliance",
+      "modelPath": "/sk2d/electric_apppliance/fan.glb",
+      "previewPath": "/sk2d/electric_apppliance/fan.jpg",
+      "fileType": "glb"
+    },
+    "washmachine": {
+      "name": "Washmachine",
+      "category": "electric_apppliance",
+      "modelPath": "/sk2d/electric_apppliance/washmachine.glb",
+      "previewPath": "/sk2d/electric_apppliance/washmachine.png",
+      "fileType": "glb"
+    },
+    "fridge": {
+      "name": "Fridge",
+      "category": "electric_apppliance",
+      "modelPath": "/sk2d/electric_apppliance/fridge.glb",
+      "previewPath": "/sk2d/electric_apppliance/fridge.glb",
+      "fileType": "glb"
+    },
+    "tv": {
+      "name": "Tv",
+      "category": "electric_apppliance",
+      "modelPath": "/sk2d/electric_apppliance/tv.glb",
+      "previewPath": "/sk2d/electric_apppliance/tv.png",
+      "fileType": "glb"
+    },
+    "ac": {
+      "name": "Ac",
+      "category": "electric_apppliance",
+      "modelPath": "/sk2d/electric_apppliance/Ac.glb",
+      "previewPath": "/sk2d/electric_apppliance/Ac.png",
+      "fileType": "glb"
+    },
+    "cap": {
+      "name": "Cap",
+      "category": "fashion",
+      "modelPath": "/sk2d/fashion/cap.glb",
+      "previewPath": "/sk2d/fashion/cap.jpg",
+      "fileType": "glb"
+    },
+    "shirt": {
+      "name": "Shirt",
+      "category": "fashion",
+      "modelPath": "/sk2d/fashion/shirt.glb",
+      "previewPath": "/sk2d/fashion/shirt.jpg",
+      "fileType": "glb"
+    },
+    "bag": {
+      "name": "Bag",
+      "category": "fashion",
+      "modelPath": "/sk2d/fashion/bag.glb",
+      "previewPath": "/sk2d/fashion/bag.jpg",
+      "fileType": "glb"
+    },
+    "shoe": {
+      "name": "Shoe",
+      "category": "fashion",
+      "modelPath": "/sk2d/fashion/shoe.glb",
+      "previewPath": "/sk2d/fashion/shoe.jpg",
+      "fileType": "glb"
+    },
+    "sofa": {
+      "name": "Sofa",
+      "category": "furniture",
+      "modelPath": "/sk2d/furniture/sofa.glb",
+      "previewPath": "/sk2d/furniture/sofa.jpg",
+      "fileType": "glb"
+    },
+    "chair": {
+      "name": "Chair",
+      "category": "furniture",
+      "modelPath": "/sk2d/furniture/chair.glb",
+      "previewPath": "/sk2d/furniture/chair.jpg",
+      "fileType": "glb"
+    },
+    "cupboard": {
+      "name": "Cupboard",
+      "category": "furniture",
+      "modelPath": "/sk2d/furniture/cupboard.ply",
+      "previewPath": "/sk2d/furniture/cupboard.jpg",
+      "fileType": "ply"
+    },
+    "table": {
+      "name": "Table",
+      "category": "furniture",
+      "modelPath": "/sk2d/furniture/table.glb",
+      "previewPath": "/sk2d/furniture/table.jpg",
+      "fileType": "glb"
+    },
+    "bed": {
+      "name": "Bed",
+      "category": "furniture",
+      "modelPath": "/sk2d/furniture/bed.glb",
+      "previewPath": "/sk2d/furniture/bed.jpg",
+      "fileType": "glb"
+    },
+    "headphones": {
+      "name": "Headphones",
+      "category": "gadgets",
+      "modelPath": "/sk2d/gadgets/headphones.glb",
+      "previewPath": "/sk2d/gadgets/headphones.png",
+      "fileType": "glb"
+    },
+    "watch": {
+      "name": "Watch",
+      "category": "gadgets",
+      "modelPath": "/sk2d/gadgets/watch.glb",
+      "previewPath": "/sk2d/gadgets/watch.png",
+      "fileType": "glb"
+    },
+    "tablet": {
+      "name": "Tablet",
+      "category": "gadgets",
+      "modelPath": "/sk2d/gadgets/tablet.glb",
+      "previewPath": "/sk2d/gadgets/tablet.png",
+      "fileType": "glb"
+    },
+    "laptop": {
+      "name": "Laptop",
+      "category": "gadgets",
+      "modelPath": "/sk2d/gadgets/laptop.glb",
+      "previewPath": "/sk2d/gadgets/laptop.png",
+      "fileType": "glb"
+    },
+    "mobile": {
+      "name": "Mobile",
+      "category": "gadgets",
+      "modelPath": "/sk2d/gadgets/mobile.glb",
+      "previewPath": "/sk2d/gadgets/mobile.png",
+      "fileType": "glb"
+    },
+    "piano": {
+      "name": "Piano",
+      "category": "instruments",
+      "modelPath": "/sk2d/instruments/piano.glb",
+      "previewPath": "/sk2d/instruments/piano.png",
+      "fileType": "glb"
+    },
+    "drum": {
+      "name": "Drum",
+      "category": "instruments",
+      "modelPath": "/sk2d/instruments/drum.glb",
+      "previewPath": "/sk2d/instruments/drum.png",
+      "fileType": "glb"
+    },
+    "flute": {
+      "name": "Flute",
+      "category": "instruments",
+      "modelPath": "/sk2d/instruments/flute.glb",
+      "previewPath": "/sk2d/instruments/flute.png",
+      "fileType": "glb"
+    },
+    "guiter": {
+      "name": "Guiter",
+      "category": "instruments",
+      "modelPath": "/sk2d/instruments/guiter.glb",
+      "previewPath": "/sk2d/instruments/guiter.png",
+      "fileType": "glb"
+    },
+    "mixer": {
+      "name": "Mixer",
+      "category": "kitchen_appliances",
+      "modelPath": "/sk2d/kitchen_appliances/mixer.glb",
+      "previewPath": "/sk2d/kitchen_appliances/mixer.png",
+      "fileType": "glb"
+    },
+    "tostar": {
+      "name": "Tostar",
+      "category": "kitchen_appliances",
+      "modelPath": "/sk2d/kitchen_appliances/tostar.glb",
+      "previewPath": "/sk2d/kitchen_appliances/tostar.png",
+      "fileType": "glb"
+    },
+    "stove": {
+      "name": "Stove",
+      "category": "kitchen_appliances",
+      "modelPath": "/sk2d/kitchen_appliances/stove.glb",
+      "previewPath": "/sk2d/kitchen_appliances/stove.png",
+      "fileType": "glb"
+    },
+    "cooker": {
+      "name": "Cooker",
+      "category": "kitchen_appliances",
+      "modelPath": "/sk2d/kitchen_appliances/cooker.glb",
+      "previewPath": "/sk2d/kitchen_appliances/cooker.png",
+      "fileType": "glb"
+    },
+    "oven": {
+      "name": "Oven",
+      "category": "kitchen_appliances",
+      "modelPath": "/sk2d/kitchen_appliances/oven.glb",
+      "previewPath": "/sk2d/kitchen_appliances/oven.png",
+      "fileType": "glb"
+    },
+    "hockey": {
+      "name": "Hockey",
+      "category": "sports",
+      "modelPath": "/sk2d/sports/hockey.glb",
+      "previewPath": "/sk2d/sports/hockeybat.png",
+      "fileType": "glb"
+    },
+    "racket": {
+      "name": "Racket",
+      "category": "sports",
+      "modelPath": "/sk2d/sports/racket.glb",
+      "previewPath": "/sk2d/sports/racket.png",
+      "fileType": "glb"
+    },
+    "football": {
+      "name": "Football",
+      "category": "sports",
+      "modelPath": "/sk2d/sports/football.glb",
+      "previewPath": "/sk2d/sports/football.png",
+      "fileType": "glb"
+    },
+    "tennisball": {
+      "name": "Tennisball",
+      "category": "sports",
+      "modelPath": "/sk2d/sports/tennisball.glb",
+      "previewPath": "/sk2d/sports/tennisball.png",
+      "fileType": "glb"
+    },
+    "cricketbat": {
+      "name": "Cricketbat",
+      "category": "sports",
+      "modelPath": "/sk2d/sports/cricketbat.glb",
+      "previewPath": "/sk2d/sports/cricketbat.glb",
+      "fileType": "glb"
+    },
+    "ruler": {
+      "name": "Ruler",
+      "category": "stationary_items",
+      "modelPath": "/sk2d/stationary_items/ruler.glb",
+      "previewPath": "/sk2d/stationary_items/ruler.png",
+      "fileType": "glb"
+    },
+    "book": {
+      "name": "Book",
+      "category": "stationary_items",
+      "modelPath": "/sk2d/stationary_items/book.glb",
+      "previewPath": "/sk2d/stationary_items/book.png",
+      "fileType": "glb"
+    },
+    "pen": {
+      "name": "Pen",
+      "category": "stationary_items",
+      "modelPath": "/sk2d/stationary_items/pen.glb",
+      "previewPath": "/sk2d/stationary_items/pen.png",
+      "fileType": "glb"
+    },
+    "easer": {
+      "name": "Easer",
+      "category": "stationary_items",
+      "modelPath": "/sk2d/stationary_items/easer.glb",
+      "previewPath": "/sk2d/stationary_items/easer.png",
+      "fileType": "glb"
+    },
+    "pencil": {
+      "name": "Pencil",
+      "category": "stationary_items",
+      "modelPath": "/sk2d/stationary_items/pencil.glb",
+      "previewPath": "/sk2d/stationary_items/pencil.png",
+      "fileType": "glb"
+    },
+    "aeroplane": {
+      "name": "Aeroplane",
+      "category": "vehicles",
+      "modelPath": "/sk2d/vehicles/aeroplane.glb",
+      "previewPath": "/sk2d/vehicles/aeroplane.jpg",
+      "fileType": "glb"
+    },
+    "car": {
+      "name": "Car",
+      "category": "vehicles",
+      "modelPath": "/sk2d/vehicles/car.glb",
+      "previewPath": "/sk2d/vehicles/car.jpg",
+      "fileType": "glb"
+    },
+    "bike": {
+      "name": "Bike",
+      "category": "vehicles",
+      "modelPath": "/sk2d/vehicles/bike.glb",
+      "previewPath": "/sk2d/vehicles/bike.jpg",
+      "fileType": "glb"
+    },
+    "bus": {
+      "name": "Bus",
+      "category": "vehicles",
+      "modelPath": "/sk2d/vehicles/bus.glb",
+      "previewPath": "/sk2d/vehicles/bus.jpg",
+      "fileType": "glb"
+    }
+  },
+  "categories": {
+    "electric_apppliance": [
+      "fan",
+      "washmachine",
+      "fridge",
+      "tv",
+      "ac"
+    ],
+    "fashion": [
+      "cap",
+      "shirt",
+      "bag",
+      "shoe"
+    ],
+    "furniture": [
+      "sofa",
+      "chair",
+      "cupboard",
+      "table",
+      "bed"
+    ],
+    "gadgets": [
+      "headphones",
+      "watch",
+      "tablet",
+      "laptop",
+      "mobile"
+    ],
+    "instruments": [
+      "piano",
+      "drum",
+      "flute",
+      "guiter"
+    ],
+    "kitchen_appliances": [
+      "mixer",
+      "tostar",
+      "stove",
+      "cooker",
+      "oven"
+    ],
+    "sports": [
+      "hockey",
+      "racket",
+      "football",
+      "tennisball",
+      "cricketbat"
+    ],
+    "stationary_items": [
+      "ruler",
+      "book",
+      "pen",
+      "easer",
+      "pencil"
+    ],
+    "vehicles": [
+      "aeroplane",
+      "car",
+      "bike",
+      "bus"
+    ]
+  }
+}

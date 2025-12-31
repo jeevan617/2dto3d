@@ -1,375 +1,178 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, PerspectiveCamera, Center, Stage } from "@react-three/drei"
+import { Canvas, useLoader } from "@react-three/fiber"
+import { OrbitControls, PerspectiveCamera, Center } from "@react-three/drei"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Download } from "lucide-react"
 import * as THREE from "three"
+import { OBJECT_TEMPLATES, OBJECT_TYPES, removeBackground, extractDominantColor } from "@/lib/object-detector"
 
 interface ModelViewerProps {
   imageUrl: string | null
 }
 
-// Advanced depth estimation from 2D image
-function estimateDepthMap(ctx: CanvasRenderingContext2D, width: number, height: number): ImageData {
-  // Create a new canvas for the depth map
-  const depthCanvas = document.createElement("canvas")
-  const depthCtx = depthCanvas.getContext("2d")
-  if (!depthCtx) throw new Error("Could not create depth map context")
+// Create 3D geometry based on object type
+function createObjectGeometry(objectType: string): THREE.BufferGeometry {
+  const template = OBJECT_TEMPLATES[objectType]
 
-  depthCanvas.width = width
-  depthCanvas.height = height
+  switch (template.type) {
+    case 'sphere': {
+      const geometry = new THREE.SphereGeometry(
+        template.params.radius,
+        template.params.widthSegments,
+        template.params.heightSegments
+      )
 
-  // Get the original image data
-  const imageData = ctx.getImageData(0, 0, width, height)
-  const data = imageData.data
+      // Apply modifications
+      if (template.params.indentTop) {
+        // Create indent at top for apple
+        const positions = geometry.attributes.position
+        for (let i = 0; i < positions.count; i++) {
+          const y = positions.getY(i)
+          if (y > 0.7) {
+            const factor = (y - 0.7) / 0.3
+            positions.setY(i, y - factor * 0.15)
+          }
+        }
+        positions.needsUpdate = true
+      }
 
-  // Create depth map data
-  const depthData = depthCtx.createImageData(width, height)
-  const depthPixels = depthData.data
+      if (template.params.flattenY) {
+        // Flatten sphere for tomato
+        const positions = geometry.attributes.position
+        for (let i = 0; i < positions.count; i++) {
+          positions.setY(i, positions.getY(i) * template.params.flattenY)
+        }
+        positions.needsUpdate = true
+      }
 
-  // Simulate ML-based depth estimation
-  // In a real implementation, this would use a trained model
-
-  // 1. Edge detection (simple Sobel operator)
-  const edgeMap = new Uint8Array(width * height)
-  for (let y = 1; y < height - 1; y++) {
-    for (let x = 1; x < width - 1; x++) {
-      const idx = (y * width + x) * 4
-
-      // Get surrounding pixels
-      const tl =
-        (data[((y - 1) * width + (x - 1)) * 4] +
-          data[((y - 1) * width + (x - 1)) * 4 + 1] +
-          data[((y - 1) * width + (x - 1)) * 4 + 2]) /
-        3
-      const t =
-        (data[((y - 1) * width + x) * 4] + data[((y - 1) * width + x) * 4 + 1] + data[((y - 1) * width + x) * 4 + 2]) /
-        3
-      const tr =
-        (data[((y - 1) * width + (x + 1)) * 4] +
-          data[((y - 1) * width + (x + 1)) * 4 + 1] +
-          data[((y - 1) * width + (x + 1)) * 4 + 2]) /
-        3
-      const l =
-        (data[(y * width + (x - 1)) * 4] + data[(y * width + (x - 1)) * 4 + 1] + data[(y * width + (x - 1)) * 4 + 2]) /
-        3
-      const r =
-        (data[(y * width + (x + 1)) * 4] + data[(y * width + (x + 1)) * 4 + 1] + data[(y * width + (x + 1)) * 4 + 2]) /
-        3
-      const bl =
-        (data[((y + 1) * width + (x - 1)) * 4] +
-          data[((y + 1) * width + (x - 1)) * 4 + 1] +
-          data[((y + 1) * width + (x - 1)) * 4 + 2]) /
-        3
-      const b =
-        (data[((y + 1) * width + x) * 4] + data[((y + 1) * width + x) * 4 + 1] + data[((y + 1) * width + x) * 4 + 2]) /
-        3
-      const br =
-        (data[((y + 1) * width + (x + 1)) * 4] +
-          data[((y + 1) * width + (x + 1)) * 4 + 1] +
-          data[((y + 1) * width + (x + 1)) * 4 + 2]) /
-        3
-
-      // Sobel X and Y
-      const gx = -tl - 2 * l - bl + tr + 2 * r + br
-      const gy = -tl - 2 * t - tr + bl + 2 * b + br
-
-      // Edge magnitude
-      const mag = Math.sqrt(gx * gx + gy * gy)
-      edgeMap[y * width + x] = Math.min(255, mag)
+      geometry.computeVertexNormals()
+      return geometry
     }
-  }
 
-  // 2. Brightness and contrast analysis
-  const brightnessMap = new Uint8Array(width * height)
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const idx = (y * width + x) * 4
-      const r = data[idx] / 255
-      const g = data[idx + 1] / 255
-      const b = data[idx + 2] / 255
-
-      // Calculate brightness
-      const brightness = (r + g + b) / 3
-      brightnessMap[y * width + x] = brightness * 255
+    case 'cylinder': {
+      const geometry = new THREE.CylinderGeometry(
+        template.params.radiusTop,
+        template.params.radiusBottom,
+        template.params.height,
+        template.params.radialSegments
+      )
+      geometry.computeVertexNormals()
+      return geometry
     }
-  }
 
-  // 3. Center-to-edge gradient (objects are often centered)
-  const centerX = width / 2
-  const centerY = height / 2
-  const maxDist = Math.sqrt(centerX * centerX + centerY * centerY)
+    case 'box': {
+      const geometry = new THREE.BoxGeometry(
+        template.params.width,
+        template.params.height,
+        template.params.depth,
+        32, 32, 32
+      )
 
-  // 4. Combine all factors to estimate depth
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const idx = (y * width + x) * 4
+      if (template.params.rounded) {
+        // Smooth corners
+        const positions = geometry.attributes.position
+        for (let i = 0; i < positions.count; i++) {
+          const x = positions.getX(i)
+          const y = positions.getY(i)
+          const z = positions.getZ(i)
 
-      // Distance from center (normalized)
-      const distX = x - centerX
-      const distY = y - centerY
-      const dist = Math.sqrt(distX * distX + distY * distY) / maxDist
+          const maxX = template.params.width / 2
+          const maxY = template.params.height / 2
+          const maxZ = template.params.depth / 2
 
-      // Edge factor (edges often indicate depth changes)
-      const edgeFactor = edgeMap[y * width + x] / 255
+          if (Math.abs(x) > maxX * 0.9 && Math.abs(y) > maxY * 0.9) {
+            const factor = 0.95
+            positions.setX(i, x * factor)
+            positions.setY(i, y * factor)
+          }
+          if (Math.abs(x) > maxX * 0.9 && Math.abs(z) > maxZ * 0.9) {
+            const factor = 0.95
+            positions.setX(i, x * factor)
+            positions.setZ(i, z * factor)
+          }
+          if (Math.abs(y) > maxY * 0.9 && Math.abs(z) > maxZ * 0.9) {
+            const factor = 0.95
+            positions.setY(i, y * factor)
+            positions.setZ(i, z * factor)
+          }
+        }
+        positions.needsUpdate = true
+      }
 
-      // Brightness factor
-      const brightnessFactor = brightnessMap[y * width + x] / 255
-
-      // Combine factors to estimate depth
-      // Objects in center are closer, brighter areas are closer, edges indicate depth changes
-      let depth =
-        0.5 +
-        0.3 * (1 - dist) + // Center objects are closer
-        0.3 * brightnessFactor + // Brighter areas are closer
-        0.1 * edgeFactor // Edges affect depth
-
-      // Normalize to 0-1 range
-      depth = Math.max(0, Math.min(1, depth))
-
-      // Store depth value (white = close, black = far)
-      depthPixels[idx] = depthPixels[idx + 1] = depthPixels[idx + 2] = depth * 255
-      depthPixels[idx + 3] = 255
+      geometry.computeVertexNormals()
+      return geometry
     }
+
+    case 'cone': {
+      const geometry = new THREE.ConeGeometry(
+        template.params.radius,
+        template.params.height,
+        template.params.radialSegments
+      )
+      geometry.computeVertexNormals()
+      return geometry
+    }
+
+    case 'torus': {
+      const geometry = new THREE.TorusGeometry(
+        template.params.radius,
+        template.params.tube,
+        template.params.radialSegments,
+        template.params.tubularSegments
+      )
+      geometry.computeVertexNormals()
+      return geometry
+    }
+
+    case 'ellipsoid': {
+      const geometry = new THREE.SphereGeometry(1, template.params.segments, template.params.segments)
+      const positions = geometry.attributes.position
+      for (let i = 0; i < positions.count; i++) {
+        positions.setX(i, positions.getX(i) * template.params.radiusX)
+        positions.setY(i, positions.getY(i) * template.params.radiusY)
+        positions.setZ(i, positions.getZ(i) * template.params.radiusZ)
+      }
+      positions.needsUpdate = true
+      geometry.computeVertexNormals()
+      return geometry
+    }
+
+    case 'hemisphere': {
+      const geometry = new THREE.SphereGeometry(
+        template.params.radius,
+        template.params.widthSegments,
+        template.params.heightSegments,
+        0,
+        Math.PI * 2,
+        0,
+        Math.PI / 2
+      )
+      geometry.computeVertexNormals()
+      return geometry
+    }
+
+    default:
+      return new THREE.SphereGeometry(1, 64, 64)
   }
-
-  // Apply Gaussian blur to smooth the depth map
-  depthCtx.putImageData(depthData, 0, 0)
-  depthCtx.filter = "blur(4px)"
-  depthCtx.drawImage(depthCanvas, 0, 0)
-
-  return depthCtx.getImageData(0, 0, width, height)
 }
 
-// Create a 3D mesh from depth map
-function createMeshFromDepthMap(
-  depthData: ImageData,
-  width: number,
-  height: number,
-  segmentsX = 128,
-  segmentsY = 128,
-): THREE.BufferGeometry {
-  // Create a plane geometry
-  const geometry = new THREE.PlaneGeometry(2, 2 * (height / width), segmentsX, segmentsY)
-  const positionAttribute = geometry.getAttribute("position") as THREE.BufferAttribute
-  const vertices = positionAttribute.array
-
-  // Apply displacement based on depth map
-  for (let i = 0; i < vertices.length / 3; i++) {
-    const x = vertices[i * 3]
-    const y = vertices[i * 3 + 1]
-
-    // Map vertex position to depth map coordinates
-    const u = Math.max(0, Math.min(1, x / 2 + 0.5))
-    const v = Math.max(0, Math.min(1, y / 2 + 0.5))
-
-    const pixelX = Math.floor(u * (width - 1))
-    const pixelY = Math.floor((1 - v) * (height - 1))
-
-    const pixelIndex = (pixelY * width + pixelX) * 4
-
-    // Get depth value (normalized to 0-1)
-    const depth = depthData.data[pixelIndex] / 255
-
-    // Apply displacement along z-axis
-    vertices[i * 3 + 2] = depth * 0.5
-  }
-
-  // Update geometry
-  positionAttribute.needsUpdate = true
-  geometry.computeVertexNormals()
-
-  return geometry
-}
-
-// This creates a realistic 3D model from a 2D image
-function RealisticModel({ imageUrl }: { imageUrl: string | null }) {
+// Object-based 3D Model Component
+function ObjectModel({ imageUrl, objectType }: { imageUrl: string; objectType: string }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const [texture, setTexture] = useState<THREE.Texture | null>(null)
   const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null)
 
   useEffect(() => {
-    if (!imageUrl) return
+    if (!imageUrl || !objectType) return
 
-    // Load the texture
-    const textureLoader = new THREE.TextureLoader()
-    textureLoader.crossOrigin = "anonymous"
-    textureLoader.load(imageUrl, (loadedTexture) => {
-      setTexture(loadedTexture)
+    // Create geometry for selected object type
+    const geom = createObjectGeometry(objectType)
+    setGeometry(geom)
 
-      // Generate depth map and create 3D mesh
-      const img = new Image()
-      img.crossOrigin = "anonymous"
-      img.onload = () => {
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
-        if (!ctx) return
-
-        canvas.width = img.width
-        canvas.height = img.height
-        ctx.drawImage(img, 0, 0)
-
-        // Estimate depth map
-        const depthMap = estimateDepthMap(ctx, canvas.width, canvas.height)
-
-        // Create 3D mesh from depth map
-        const mesh = createMeshFromDepthMap(depthMap, canvas.width, canvas.height)
-        setGeometry(mesh)
-      }
-
-      img.src = imageUrl
-    })
-  }, [imageUrl])
-
-  if (!texture || !geometry) return null
-
-  return (
-    <Center>
-      <mesh ref={meshRef} geometry={geometry} castShadow receiveShadow>
-        <meshStandardMaterial map={texture} side={THREE.DoubleSide} roughness={0.7} metalness={0.2} />
-      </mesh>
-    </Center>
-  )
-}
-
-// This creates a 3D model with normal mapping
-function NormalMappedModel({ imageUrl }: { imageUrl: string | null }) {
-  const meshRef = useRef<THREE.Mesh>(null)
-  const [maps, setMaps] = useState<{
-    map: THREE.Texture | null
-    normalMap: THREE.Texture | null
-    displacementMap: THREE.Texture | null
-  }>({
-    map: null,
-    normalMap: null,
-    displacementMap: null,
-  })
-
-  useEffect(() => {
-    if (!imageUrl) return
-
-    // Load the texture
-    const textureLoader = new THREE.TextureLoader()
-    textureLoader.crossOrigin = "anonymous"
-    textureLoader.load(imageUrl, (loadedTexture) => {
-      // Generate normal and displacement maps
-      const img = new Image()
-      img.crossOrigin = "anonymous"
-      img.onload = () => {
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
-        if (!ctx) return
-
-        canvas.width = img.width
-        canvas.height = img.height
-        ctx.drawImage(img, 0, 0)
-
-        // Estimate depth map
-        const depthMap = estimateDepthMap(ctx, canvas.width, canvas.height)
-
-        // Create displacement map
-        const dispCanvas = document.createElement("canvas")
-        const dispCtx = dispCanvas.getContext("2d")
-        if (!dispCtx) return
-
-        dispCanvas.width = canvas.width
-        dispCanvas.height = canvas.height
-        dispCtx.putImageData(depthMap, 0, 0)
-
-        const dispTexture = new THREE.Texture(dispCanvas)
-        dispTexture.needsUpdate = true
-
-        // Create normal map from depth map
-        const normalCanvas = document.createElement("canvas")
-        const normalCtx = normalCanvas.getContext("2d")
-        if (!normalCtx) return
-
-        normalCanvas.width = canvas.width
-        normalCanvas.height = canvas.height
-
-        // Simple normal map generation from depth map
-        const normalData = normalCtx.createImageData(canvas.width, canvas.height)
-        const normalPixels = normalData.data
-        const depthPixels = depthMap.data
-
-        for (let y = 1; y < canvas.height - 1; y++) {
-          for (let x = 1; x < canvas.width - 1; x++) {
-            const idx = (y * canvas.width + x) * 4
-
-            // Get depth values of neighboring pixels
-            const left = depthPixels[(y * canvas.width + (x - 1)) * 4] / 255
-            const right = depthPixels[(y * canvas.width + (x + 1)) * 4] / 255
-            const top = depthPixels[((y - 1) * canvas.width + x) * 4] / 255
-            const bottom = depthPixels[((y + 1) * canvas.width + x) * 4] / 255
-
-            // Calculate normal vector using central differences
-            const dx = (right - left) * 2.0
-            const dy = (bottom - top) * 2.0
-            const dz = 1.0
-
-            // Normalize the vector
-            const length = Math.sqrt(dx * dx + dy * dy + dz * dz)
-            const nx = dx / length
-            const ny = dy / length
-            const nz = dz / length
-
-            // Convert normal to RGB (range 0-255)
-            // Normal map format: RGB = (normal.x * 0.5 + 0.5, normal.y * 0.5 + 0.5, normal.z)
-            normalPixels[idx] = (nx * 0.5 + 0.5) * 255
-            normalPixels[idx + 1] = (ny * 0.5 + 0.5) * 255
-            normalPixels[idx + 2] = nz * 255
-            normalPixels[idx + 3] = 255
-          }
-        }
-
-        normalCtx.putImageData(normalData, 0, 0)
-
-        const normalTexture = new THREE.Texture(normalCanvas)
-        normalTexture.needsUpdate = true
-
-        setMaps({
-          map: loadedTexture,
-          normalMap: normalTexture,
-          displacementMap: dispTexture,
-        })
-      }
-
-      img.src = imageUrl
-    })
-  }, [imageUrl])
-
-  if (!maps.map || !maps.normalMap || !maps.displacementMap) return null
-
-  return (
-    <Center>
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial
-          map={maps.map}
-          normalMap={maps.normalMap}
-          displacementMap={maps.displacementMap}
-          displacementScale={0.2}
-          normalScale={new THREE.Vector2(1, 1)}
-          roughness={0.7}
-          metalness={0.2}
-        />
-      </mesh>
-    </Center>
-  )
-}
-
-// This creates a point cloud representation of the image with depth
-function DepthPointCloudModel({ imageUrl }: { imageUrl: string | null }) {
-  const pointsRef = useRef<THREE.Points>(null)
-  const [points, setPoints] = useState<Float32Array | null>(null)
-  const [colors, setColors] = useState<Float32Array | null>(null)
-
-  useEffect(() => {
-    if (!imageUrl) return
-
-    // Create a canvas to analyze the image
+    // Load and process texture
     const img = new Image()
     img.crossOrigin = "anonymous"
     img.onload = () => {
@@ -381,143 +184,121 @@ function DepthPointCloudModel({ imageUrl }: { imageUrl: string | null }) {
       canvas.height = img.height
       ctx.drawImage(img, 0, 0)
 
-      // Estimate depth map
-      const depthMap = estimateDepthMap(ctx, canvas.width, canvas.height)
-
-      // Get image data for colors
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
-      // Create points based on image pixels and depth
-      const numPoints = 20000
-      const pointsArray = new Float32Array(numPoints * 3)
-      const colorsArray = new Float32Array(numPoints * 3)
+      // Remove background
+      const { processedData } = removeBackground(imageData, canvas.width, canvas.height)
 
-      for (let i = 0; i < numPoints; i++) {
-        // Sample a random pixel from the image
-        const x = Math.floor(Math.random() * canvas.width)
-        const y = Math.floor(Math.random() * canvas.height)
-        const pixelIndex = (y * canvas.width + x) * 4
+      // Create texture from processed image
+      ctx.putImageData(processedData, 0, 0)
 
-        // Get pixel color
-        const r = imageData.data[pixelIndex] / 255
-        const g = imageData.data[pixelIndex + 1] / 255
-        const b = imageData.data[pixelIndex + 2] / 255
-        const a = imageData.data[pixelIndex + 3] / 255
-
-        // Skip transparent pixels
-        if (a < 0.5) {
-          i--
-          continue
-        }
-
-        // Get depth value
-        const depth = depthMap.data[pixelIndex] / 255
-
-        // Map pixel coordinates to 3D space
-        const xPos = (x / canvas.width) * 2 - 1
-        const yPos = -((y / canvas.height) * 2 - 1)
-        const zPos = depth * 0.5 - 0.25
-
-        // Store position
-        pointsArray[i * 3] = xPos
-        pointsArray[i * 3 + 1] = yPos
-        pointsArray[i * 3 + 2] = zPos
-
-        // Store color
-        colorsArray[i * 3] = r
-        colorsArray[i * 3 + 1] = g
-        colorsArray[i * 3 + 2] = b
-      }
-
-      setPoints(pointsArray)
-      setColors(colorsArray)
+      const tex = new THREE.CanvasTexture(canvas)
+      tex.needsUpdate = true
+      setTexture(tex)
     }
 
     img.src = imageUrl
-  }, [imageUrl])
+  }, [imageUrl, objectType])
 
-  if (!points || !colors) return null
+  if (!texture || !geometry) return null
+
+  const template = OBJECT_TEMPLATES[objectType]
+  const materialHints = template.materialHints
 
   return (
     <Center>
-      <points ref={pointsRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={points.length / 3} array={points} itemSize={3} />
-          <bufferAttribute attach="attributes-color" count={colors.length / 3} array={colors} itemSize={3} />
-        </bufferGeometry>
-        <pointsMaterial size={0.01} vertexColors sizeAttenuation />
-      </points>
+      <mesh ref={meshRef} geometry={geometry} castShadow receiveShadow>
+        <meshStandardMaterial
+          map={texture}
+          roughness={materialHints.roughness}
+          metalness={materialHints.metalness}
+          envMapIntensity={0.8}
+          transparent={true}
+        />
+      </mesh>
     </Center>
   )
 }
 
 export default function ModelViewer({ imageUrl }: ModelViewerProps) {
-  const [modelType, setModelType] = useState<"realistic" | "normal" | "pointcloud">("realistic")
+  const [objectType, setObjectType] = useState<string>("apple")
 
   const handleDownload = () => {
-    // In a real implementation, this would download the generated 3D model
     alert("In a real implementation, this would download the 3D model file (GLB/OBJ).")
   }
 
   return (
     <div className="relative h-full flex flex-col">
-      <div className="absolute top-0 right-0 z-10 p-2">
+      <div className="absolute top-0 left-0 right-0 z-10 p-2 flex justify-between items-center">
+        <Select value={objectType} onValueChange={setObjectType}>
+          <SelectTrigger className="w-[200px] bg-white">
+            <SelectValue placeholder="Select object type" />
+          </SelectTrigger>
+          <SelectContent>
+            {OBJECT_TYPES.map((type) => (
+              <SelectItem key={type} value={type}>
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Button variant="outline" size="sm" className="bg-white" onClick={handleDownload}>
           <Download className="h-4 w-4 mr-1" />
           Download Model
         </Button>
       </div>
 
-      <div className="flex-1 min-h-[400px] bg-gray-100 rounded-md overflow-hidden">
+      <div className="flex-1 min-h-[400px] bg-gradient-to-b from-gray-50 to-gray-200 rounded-md overflow-hidden mt-12">
         {imageUrl ? (
-          <Canvas shadows camera={{ position: [0, 0, 2], fov: 50 }}>
-            <PerspectiveCamera makeDefault position={[0, 0, 2]} />
-            <ambientLight intensity={0.5} />
-            <spotLight position={[5, 5, 5]} angle={0.15} penumbra={1} intensity={1} castShadow />
-            <pointLight position={[-5, -5, -5]} intensity={0.5} />
+          <Canvas shadows camera={{ position: [0, 0, 3], fov: 50 }}>
+            <PerspectiveCamera makeDefault position={[0, 0, 3]} />
 
-            <Stage environment="studio" intensity={0.5} contactShadow shadows>
-              {modelType === "realistic" && <RealisticModel imageUrl={imageUrl} />}
-              {modelType === "normal" && <NormalMappedModel imageUrl={imageUrl} />}
-              {modelType === "pointcloud" && <DepthPointCloudModel imageUrl={imageUrl} />}
-            </Stage>
+            {/* Three-point lighting setup for realistic illumination */}
+            <hemisphereLight intensity={0.6} color="#ffffff" groundColor="#444444" />
 
-            <OrbitControls autoRotate autoRotateSpeed={0.5} />
+            {/* Key light - main light source */}
+            <directionalLight
+              position={[5, 5, 5]}
+              intensity={1.2}
+              castShadow
+              shadow-mapSize-width={2048}
+              shadow-mapSize-height={2048}
+              shadow-camera-far={50}
+              shadow-camera-left={-10}
+              shadow-camera-right={10}
+              shadow-camera-top={10}
+              shadow-camera-bottom={-10}
+            />
+
+            {/* Fill light - soften shadows */}
+            <directionalLight position={[-3, 2, -2]} intensity={0.4} color="#b0c4de" />
+
+            {/* Rim light - highlight edges */}
+            <pointLight position={[0, -3, -3]} intensity={0.6} color="#ffeedd" />
+
+            {/* Additional ambient for overall brightness */}
+            <ambientLight intensity={0.3} />
+
+            {/* Ground plane for shadows */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
+              <planeGeometry args={[10, 10]} />
+              <shadowMaterial opacity={0.3} />
+            </mesh>
+
+            <ObjectModel imageUrl={imageUrl} objectType={objectType} />
+
+            <OrbitControls autoRotate autoRotateSpeed={1} enableDamping dampingFactor={0.05} />
           </Canvas>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <p className="text-gray-500">No image uploaded yet</p>
+            <p className="text-gray-500">Upload an image to get started</p>
           </div>
         )}
       </div>
 
-      <div className="mt-4 flex justify-center">
-        <div className="flex bg-gray-100 p-1 rounded-md">
-          <Button
-            variant={modelType === "realistic" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setModelType("realistic")}
-            className="rounded-r-none"
-          >
-            3D Model
-          </Button>
-          <Button
-            variant={modelType === "normal" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setModelType("normal")}
-            className="rounded-l-none rounded-r-none"
-          >
-            Textured 3D
-          </Button>
-          <Button
-            variant={modelType === "pointcloud" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setModelType("pointcloud")}
-            className="rounded-l-none"
-          >
-            Point Cloud
-          </Button>
-        </div>
+      <div className="mt-4 text-center text-sm text-gray-600">
+        <p>Select the object type that best matches your image for realistic 3D conversion</p>
       </div>
     </div>
   )
