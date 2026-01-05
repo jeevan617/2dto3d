@@ -1,0 +1,17 @@
+.App {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.color-screen {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #00ffff;
+  font-size: 3rem;
+  text-shadow: 0 0 20px #ff00ff, 0 0 30px #00ffff;
+}

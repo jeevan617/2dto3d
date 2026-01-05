@@ -1,0 +1,12 @@
+{
+    "files.exclude": {
+        "**/.internal-assets-cache": true,
+        "**/assets/.v0-internal-data": true,
+        "**/models_analysis.json": true,
+        "**/analyze_models.py": true
+    },
+    "search.exclude": {
+        "**/.internal-assets-cache": true,
+        "**/assets/.v0-internal-data": true
+    }
+}

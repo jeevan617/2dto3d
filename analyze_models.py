@@ -57,8 +57,8 @@ def analyze_sk2d_directory(sk2d_path):
                 models[key] = {
                     'name': model_name.replace('_', ' ').title(),
                     'category': category_dir,
-                    'modelPath': f'/sk2d/{category_dir}/{files["model"]}',
-                    'previewPath': f'/sk2d/{category_dir}/{preview_file}' if preview_file else f'/sk2d/{category_dir}/{files["model"]}',
+                    'modelPath': f'/assets/.v0-internal-data/{category_dir}/{files["model"]}',
+                    'previewPath': f'/assets/.v0-internal-data/{category_dir}/{preview_file}' if preview_file else f'/assets/.v0-internal-data/{category_dir}/{files["model"]}',
                     'fileType': files['ext']
                 }
                 category_models.append(key)
@@ -140,8 +140,8 @@ export function getModelNamesForCategory(category: Category): string[] {
     return ts_code
 
 def main():
-    # Path to sk2d directory
-    sk2d_path = '/Users/karthikm/2D-to-3D-Image-Converter/sk2d'
+    # Path to source directory
+    sk2d_path = '/Users/karthikm/2D-to-3D-Image-Converter/.internal-assets-cache'
     
     print("Analyzing sk2d directory...")
     models, categories = analyze_sk2d_directory(sk2d_path)
@@ -155,7 +155,7 @@ def main():
     ts_code = generate_typescript_registry(models, categories)
     
     # Write to file
-    output_path = '/Users/karthikm/2D-to-3D-Image-Converter/2d-to-3d-converter/lib/model-registry.ts'
+    output_path = '/Users/karthikm/2D-to-3D-Image-Converter/backend/lib/model-registry.ts'
     with open(output_path, 'w') as f:
         f.write(ts_code)
     

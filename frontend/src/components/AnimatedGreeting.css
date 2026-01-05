@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); /* Pixel-style font */
+
+.animated-greet-container {
+  position: fixed;
+  top: 20%;          /* Move it down from top */
+  left: -15rem; 
+  top: calc(20% + 50px);       /* Left side */
+  transform: translateY(-50%);  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 999;
+  animation: float 6s ease-in-out infinite;
+}
+.greet {
+  font-size: 28px;
+  font-family: 'Orbitron', sans-serif;
+  color: black;
+  font-weight: 400;
+}
+
+.static-part {
+  font-weight: 400;
+}
+
+.changing-part {
+  font-weight: 400;
+}
+
+/* Fade animations */
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.8s ease-in;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%   { transform: translateY(-50%) translateY(0px); }
+  50%  { transform: translateY(-50%) translateY(-5px); }
+  100% { transform: translateY(-50%) translateY(0px); }
+}

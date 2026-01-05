@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+.navbar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white; /* solid white background */
+  z-index: 1000;
+  font-family: 'Orbitron', sans-serif; /* unified font */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* subtle shadow for separation */
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: black; /* Sketchers logo black */
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  font-family: 'Orbitron', sans-serif; /* same font for links */
+}
+
+.nav-list li {
+  cursor: pointer;
+  color: black;
+  transition: 0.3s;
+}
+
+.nav-list li:hover {
+  color: #0094ff; /* subtle hover effect */
+}

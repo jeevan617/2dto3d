@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+.home-section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  background: black;
+}
+
+/* Left half: Robot scene */
+.robot-half {
+  width: 50%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Greeting overlay on robot */
+.greeting-overlay {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+/* Right half container */
+.right-half {
+  width: 50%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Spline background fills right half */
+.spline-bg {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none; /* Let buttons be clickable */
+}
+
+/* CTA overlay on top of Spline */
+.cta-overlay {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  max-width: 80%;
+}
+
+.cta-overlay h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-buttons button {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: white;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(5px);
+  font-family: 'Orbitron', sans-serif;
+  transition: 0.3s;
+}
+
+.cta-buttons button:hover {
+  background: rgba(255,255,255,0.6);
+  color: black;
+}
+
+.engine-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(0, 255, 128, 0.1);
+    border: 1px solid rgba(0, 255, 128, 0.3);
+    border-radius: 20px;
+    color: #00ff80;
+    font-size: 0.7rem;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.tech-footer {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.65rem;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    gap: 10px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.tech-footer .spacer {
+    color: rgba(255, 255, 255, 0.1);
+}

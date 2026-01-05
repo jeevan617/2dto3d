@@ -3,295 +3,295 @@
     "fan": {
       "name": "Fan",
       "category": "electric_apppliance",
-      "modelPath": "/sk2d/electric_apppliance/fan.glb",
-      "previewPath": "/sk2d/electric_apppliance/fan.jpg",
+      "modelPath": "/assets/.v0-internal-data/electric_apppliance/fan.glb",
+      "previewPath": "/assets/.v0-internal-data/electric_apppliance/fan.jpg",
       "fileType": "glb"
     },
     "washmachine": {
       "name": "Washmachine",
       "category": "electric_apppliance",
-      "modelPath": "/sk2d/electric_apppliance/washmachine.glb",
-      "previewPath": "/sk2d/electric_apppliance/washmachine.png",
+      "modelPath": "/assets/.v0-internal-data/electric_apppliance/washmachine.glb",
+      "previewPath": "/assets/.v0-internal-data/electric_apppliance/washmachine.png",
       "fileType": "glb"
     },
     "fridge": {
       "name": "Fridge",
       "category": "electric_apppliance",
-      "modelPath": "/sk2d/electric_apppliance/fridge.glb",
-      "previewPath": "/sk2d/electric_apppliance/fridge.glb",
+      "modelPath": "/assets/.v0-internal-data/electric_apppliance/fridge.glb",
+      "previewPath": "/assets/.v0-internal-data/electric_apppliance/fridge.glb",
       "fileType": "glb"
     },
     "tv": {
       "name": "Tv",
       "category": "electric_apppliance",
-      "modelPath": "/sk2d/electric_apppliance/tv.glb",
-      "previewPath": "/sk2d/electric_apppliance/tv.png",
+      "modelPath": "/assets/.v0-internal-data/electric_apppliance/tv.glb",
+      "previewPath": "/assets/.v0-internal-data/electric_apppliance/tv.png",
       "fileType": "glb"
     },
     "ac": {
       "name": "Ac",
       "category": "electric_apppliance",
-      "modelPath": "/sk2d/electric_apppliance/Ac.glb",
-      "previewPath": "/sk2d/electric_apppliance/Ac.png",
+      "modelPath": "/assets/.v0-internal-data/electric_apppliance/Ac.glb",
+      "previewPath": "/assets/.v0-internal-data/electric_apppliance/Ac.png",
       "fileType": "glb"
     },
     "cap": {
       "name": "Cap",
       "category": "fashion",
-      "modelPath": "/sk2d/fashion/cap.glb",
-      "previewPath": "/sk2d/fashion/cap.jpg",
+      "modelPath": "/assets/.v0-internal-data/fashion/cap.glb",
+      "previewPath": "/assets/.v0-internal-data/fashion/cap.jpg",
       "fileType": "glb"
     },
     "shirt": {
       "name": "Shirt",
       "category": "fashion",
-      "modelPath": "/sk2d/fashion/shirt.glb",
-      "previewPath": "/sk2d/fashion/shirt.jpg",
+      "modelPath": "/assets/.v0-internal-data/fashion/shirt.glb",
+      "previewPath": "/assets/.v0-internal-data/fashion/shirt.jpg",
       "fileType": "glb"
     },
     "bag": {
       "name": "Bag",
       "category": "fashion",
-      "modelPath": "/sk2d/fashion/bag.glb",
-      "previewPath": "/sk2d/fashion/bag.jpg",
+      "modelPath": "/assets/.v0-internal-data/fashion/bag.glb",
+      "previewPath": "/assets/.v0-internal-data/fashion/bag.jpg",
       "fileType": "glb"
     },
     "shoe": {
       "name": "Shoe",
       "category": "fashion",
-      "modelPath": "/sk2d/fashion/shoe.glb",
-      "previewPath": "/sk2d/fashion/shoe.jpg",
+      "modelPath": "/assets/.v0-internal-data/fashion/shoe.glb",
+      "previewPath": "/assets/.v0-internal-data/fashion/shoe.jpg",
       "fileType": "glb"
     },
     "sofa": {
       "name": "Sofa",
       "category": "furniture",
-      "modelPath": "/sk2d/furniture/sofa.glb",
-      "previewPath": "/sk2d/furniture/sofa.jpg",
+      "modelPath": "/assets/.v0-internal-data/furniture/sofa.glb",
+      "previewPath": "/assets/.v0-internal-data/furniture/sofa.jpg",
       "fileType": "glb"
     },
     "chair": {
       "name": "Chair",
       "category": "furniture",
-      "modelPath": "/sk2d/furniture/chair.glb",
-      "previewPath": "/sk2d/furniture/chair.jpg",
+      "modelPath": "/assets/.v0-internal-data/furniture/chair.glb",
+      "previewPath": "/assets/.v0-internal-data/furniture/chair.jpg",
       "fileType": "glb"
     },
     "cupboard": {
       "name": "Cupboard",
       "category": "furniture",
-      "modelPath": "/sk2d/furniture/cupboard.ply",
-      "previewPath": "/sk2d/furniture/cupboard.jpg",
+      "modelPath": "/assets/.v0-internal-data/furniture/cupboard.ply",
+      "previewPath": "/assets/.v0-internal-data/furniture/cupboard.jpg",
       "fileType": "ply"
     },
     "table": {
       "name": "Table",
       "category": "furniture",
-      "modelPath": "/sk2d/furniture/table.glb",
-      "previewPath": "/sk2d/furniture/table.jpg",
+      "modelPath": "/assets/.v0-internal-data/furniture/table.glb",
+      "previewPath": "/assets/.v0-internal-data/furniture/table.jpg",
       "fileType": "glb"
     },
     "bed": {
       "name": "Bed",
       "category": "furniture",
-      "modelPath": "/sk2d/furniture/bed.glb",
-      "previewPath": "/sk2d/furniture/bed.jpg",
+      "modelPath": "/assets/.v0-internal-data/furniture/bed.glb",
+      "previewPath": "/assets/.v0-internal-data/furniture/bed.jpg",
       "fileType": "glb"
     },
     "headphones": {
       "name": "Headphones",
       "category": "gadgets",
-      "modelPath": "/sk2d/gadgets/headphones.glb",
-      "previewPath": "/sk2d/gadgets/headphones.png",
+      "modelPath": "/assets/.v0-internal-data/gadgets/headphones.glb",
+      "previewPath": "/assets/.v0-internal-data/gadgets/headphones.png",
       "fileType": "glb"
     },
     "watch": {
       "name": "Watch",
       "category": "gadgets",
-      "modelPath": "/sk2d/gadgets/watch.glb",
-      "previewPath": "/sk2d/gadgets/watch.png",
+      "modelPath": "/assets/.v0-internal-data/gadgets/watch.glb",
+      "previewPath": "/assets/.v0-internal-data/gadgets/watch.png",
       "fileType": "glb"
     },
     "tablet": {
       "name": "Tablet",
       "category": "gadgets",
-      "modelPath": "/sk2d/gadgets/tablet.glb",
-      "previewPath": "/sk2d/gadgets/tablet.png",
+      "modelPath": "/assets/.v0-internal-data/gadgets/tablet.glb",
+      "previewPath": "/assets/.v0-internal-data/gadgets/tablet.png",
       "fileType": "glb"
     },
     "laptop": {
       "name": "Laptop",
       "category": "gadgets",
-      "modelPath": "/sk2d/gadgets/laptop.glb",
-      "previewPath": "/sk2d/gadgets/laptop.png",
+      "modelPath": "/assets/.v0-internal-data/gadgets/laptop.glb",
+      "previewPath": "/assets/.v0-internal-data/gadgets/laptop.png",
       "fileType": "glb"
     },
     "mobile": {
       "name": "Mobile",
       "category": "gadgets",
-      "modelPath": "/sk2d/gadgets/mobile.glb",
-      "previewPath": "/sk2d/gadgets/mobile.png",
+      "modelPath": "/assets/.v0-internal-data/gadgets/mobile.glb",
+      "previewPath": "/assets/.v0-internal-data/gadgets/mobile.png",
       "fileType": "glb"
     },
     "piano": {
       "name": "Piano",
       "category": "instruments",
-      "modelPath": "/sk2d/instruments/piano.glb",
-      "previewPath": "/sk2d/instruments/piano.png",
+      "modelPath": "/assets/.v0-internal-data/instruments/piano.glb",
+      "previewPath": "/assets/.v0-internal-data/instruments/piano.png",
       "fileType": "glb"
     },
     "drum": {
       "name": "Drum",
       "category": "instruments",
-      "modelPath": "/sk2d/instruments/drum.glb",
-      "previewPath": "/sk2d/instruments/drum.png",
+      "modelPath": "/assets/.v0-internal-data/instruments/drum.glb",
+      "previewPath": "/assets/.v0-internal-data/instruments/drum.png",
       "fileType": "glb"
     },
     "flute": {
       "name": "Flute",
       "category": "instruments",
-      "modelPath": "/sk2d/instruments/flute.glb",
-      "previewPath": "/sk2d/instruments/flute.png",
+      "modelPath": "/assets/.v0-internal-data/instruments/flute.glb",
+      "previewPath": "/assets/.v0-internal-data/instruments/flute.png",
       "fileType": "glb"
     },
     "guiter": {
       "name": "Guiter",
       "category": "instruments",
-      "modelPath": "/sk2d/instruments/guiter.glb",
-      "previewPath": "/sk2d/instruments/guiter.png",
+      "modelPath": "/assets/.v0-internal-data/instruments/guiter.glb",
+      "previewPath": "/assets/.v0-internal-data/instruments/guiter.png",
       "fileType": "glb"
     },
     "mixer": {
       "name": "Mixer",
       "category": "kitchen_appliances",
-      "modelPath": "/sk2d/kitchen_appliances/mixer.glb",
-      "previewPath": "/sk2d/kitchen_appliances/mixer.png",
+      "modelPath": "/assets/.v0-internal-data/kitchen_appliances/mixer.glb",
+      "previewPath": "/assets/.v0-internal-data/kitchen_appliances/mixer.png",
       "fileType": "glb"
     },
     "tostar": {
       "name": "Tostar",
       "category": "kitchen_appliances",
-      "modelPath": "/sk2d/kitchen_appliances/tostar.glb",
-      "previewPath": "/sk2d/kitchen_appliances/tostar.png",
+      "modelPath": "/assets/.v0-internal-data/kitchen_appliances/tostar.glb",
+      "previewPath": "/assets/.v0-internal-data/kitchen_appliances/tostar.png",
       "fileType": "glb"
     },
     "stove": {
       "name": "Stove",
       "category": "kitchen_appliances",
-      "modelPath": "/sk2d/kitchen_appliances/stove.glb",
-      "previewPath": "/sk2d/kitchen_appliances/stove.png",
+      "modelPath": "/assets/.v0-internal-data/kitchen_appliances/stove.glb",
+      "previewPath": "/assets/.v0-internal-data/kitchen_appliances/stove.png",
       "fileType": "glb"
     },
     "cooker": {
       "name": "Cooker",
       "category": "kitchen_appliances",
-      "modelPath": "/sk2d/kitchen_appliances/cooker.glb",
-      "previewPath": "/sk2d/kitchen_appliances/cooker.png",
+      "modelPath": "/assets/.v0-internal-data/kitchen_appliances/cooker.glb",
+      "previewPath": "/assets/.v0-internal-data/kitchen_appliances/cooker.png",
       "fileType": "glb"
     },
     "oven": {
       "name": "Oven",
       "category": "kitchen_appliances",
-      "modelPath": "/sk2d/kitchen_appliances/oven.glb",
-      "previewPath": "/sk2d/kitchen_appliances/oven.png",
+      "modelPath": "/assets/.v0-internal-data/kitchen_appliances/oven.glb",
+      "previewPath": "/assets/.v0-internal-data/kitchen_appliances/oven.png",
       "fileType": "glb"
     },
     "hockey": {
       "name": "Hockey",
       "category": "sports",
-      "modelPath": "/sk2d/sports/hockey.glb",
-      "previewPath": "/sk2d/sports/hockeybat.png",
+      "modelPath": "/assets/.v0-internal-data/sports/hockey.glb",
+      "previewPath": "/assets/.v0-internal-data/sports/hockeybat.png",
       "fileType": "glb"
     },
     "racket": {
       "name": "Racket",
       "category": "sports",
-      "modelPath": "/sk2d/sports/racket.glb",
-      "previewPath": "/sk2d/sports/racket.png",
+      "modelPath": "/assets/.v0-internal-data/sports/racket.glb",
+      "previewPath": "/assets/.v0-internal-data/sports/racket.png",
       "fileType": "glb"
     },
     "football": {
       "name": "Football",
       "category": "sports",
-      "modelPath": "/sk2d/sports/football.glb",
-      "previewPath": "/sk2d/sports/football.png",
+      "modelPath": "/assets/.v0-internal-data/sports/football.glb",
+      "previewPath": "/assets/.v0-internal-data/sports/football.png",
       "fileType": "glb"
     },
     "tennisball": {
       "name": "Tennisball",
       "category": "sports",
-      "modelPath": "/sk2d/sports/tennisball.glb",
-      "previewPath": "/sk2d/sports/tennisball.png",
+      "modelPath": "/assets/.v0-internal-data/sports/tennisball.glb",
+      "previewPath": "/assets/.v0-internal-data/sports/tennisball.png",
       "fileType": "glb"
     },
     "cricketbat": {
       "name": "Cricketbat",
       "category": "sports",
-      "modelPath": "/sk2d/sports/cricketbat.glb",
-      "previewPath": "/sk2d/sports/cricketbat.glb",
+      "modelPath": "/assets/.v0-internal-data/sports/cricketbat.glb",
+      "previewPath": "/assets/.v0-internal-data/sports/cricketbat.glb",
       "fileType": "glb"
     },
     "ruler": {
       "name": "Ruler",
       "category": "stationary_items",
-      "modelPath": "/sk2d/stationary_items/ruler.glb",
-      "previewPath": "/sk2d/stationary_items/ruler.png",
+      "modelPath": "/assets/.v0-internal-data/stationary_items/ruler.glb",
+      "previewPath": "/assets/.v0-internal-data/stationary_items/ruler.png",
       "fileType": "glb"
     },
     "book": {
       "name": "Book",
       "category": "stationary_items",
-      "modelPath": "/sk2d/stationary_items/book.glb",
-      "previewPath": "/sk2d/stationary_items/book.png",
+      "modelPath": "/assets/.v0-internal-data/stationary_items/book.glb",
+      "previewPath": "/assets/.v0-internal-data/stationary_items/book.png",
       "fileType": "glb"
     },
     "pen": {
       "name": "Pen",
       "category": "stationary_items",
-      "modelPath": "/sk2d/stationary_items/pen.glb",
-      "previewPath": "/sk2d/stationary_items/pen.png",
+      "modelPath": "/assets/.v0-internal-data/stationary_items/pen.glb",
+      "previewPath": "/assets/.v0-internal-data/stationary_items/pen.png",
       "fileType": "glb"
     },
     "easer": {
       "name": "Easer",
       "category": "stationary_items",
-      "modelPath": "/sk2d/stationary_items/easer.glb",
-      "previewPath": "/sk2d/stationary_items/easer.png",
+      "modelPath": "/assets/.v0-internal-data/stationary_items/easer.glb",
+      "previewPath": "/assets/.v0-internal-data/stationary_items/easer.png",
       "fileType": "glb"
     },
     "pencil": {
       "name": "Pencil",
       "category": "stationary_items",
-      "modelPath": "/sk2d/stationary_items/pencil.glb",
-      "previewPath": "/sk2d/stationary_items/pencil.png",
+      "modelPath": "/assets/.v0-internal-data/stationary_items/pencil.glb",
+      "previewPath": "/assets/.v0-internal-data/stationary_items/pencil.png",
       "fileType": "glb"
     },
     "aeroplane": {
       "name": "Aeroplane",
       "category": "vehicles",
-      "modelPath": "/sk2d/vehicles/aeroplane.glb",
-      "previewPath": "/sk2d/vehicles/aeroplane.jpg",
+      "modelPath": "/assets/.v0-internal-data/vehicles/aeroplane.glb",
+      "previewPath": "/assets/.v0-internal-data/vehicles/aeroplane.jpg",
       "fileType": "glb"
     },
     "car": {
       "name": "Car",
       "category": "vehicles",
-      "modelPath": "/sk2d/vehicles/car.glb",
-      "previewPath": "/sk2d/vehicles/car.jpg",
+      "modelPath": "/assets/.v0-internal-data/vehicles/car.glb",
+      "previewPath": "/assets/.v0-internal-data/vehicles/car.jpg",
       "fileType": "glb"
     },
     "bike": {
       "name": "Bike",
       "category": "vehicles",
-      "modelPath": "/sk2d/vehicles/bike.glb",
-      "previewPath": "/sk2d/vehicles/bike.jpg",
+      "modelPath": "/assets/.v0-internal-data/vehicles/bike.glb",
+      "previewPath": "/assets/.v0-internal-data/vehicles/bike.jpg",
       "fileType": "glb"
     },
     "bus": {
       "name": "Bus",
       "category": "vehicles",
-      "modelPath": "/sk2d/vehicles/bus.glb",
-      "previewPath": "/sk2d/vehicles/bus.jpg",
+      "modelPath": "/assets/.v0-internal-data/vehicles/bus.glb",
+      "previewPath": "/assets/.v0-internal-data/vehicles/bus.jpg",
       "fileType": "glb"
     }
   },

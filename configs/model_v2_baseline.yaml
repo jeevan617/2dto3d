@@ -1,0 +1,20 @@
+model:
+  name: "Sketch3DRoot"
+  latent_dim: 1024
+  encoder_backbone: "resnet50_v2"
+  num_points: 2048
+  optimizer: "adamw"
+  learning_rate: 0.0001
+  weight_decay: 0.01
+
+data:
+  dataset_root: "./data/sketch_3d_pairs"
+  augmentation: "standard_3d"
+  batch_size: 64
+  workers: 8
+
+inference:
+  use_fp16: true
+  batch_size: 1
+  smoothing_iterations: 10
+  laplacian_weight: 0.5
