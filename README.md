@@ -90,7 +90,15 @@ graph LR
 ---
 
 ## 📝 Research & Development
-
+- **Core Backbone**: `ResNet50-v2` (ImageNet Pretrained) + `SketchEncoder-v5`
+- **Specialized Heads**:
+  - `FurnitureReconstructor`: Voxel-based decoding for rigid structures.
+  - `VehicleReconstructor`: Multi-head attention for component assembly.
+  - `GadgetMicroSurfaceNet`: Metallic texture synthesis for electronics.
+  - `FashionNet`: Physics-based cloth simulation layer.
+  - `InstrumentHarmonicsNet`: Acoustic-property guided geometry.
+  - `AerodynamicFlowNet`: Shape optimization for sports equipment.
+- **Pipeline**: Hybrid `Rasterization` -> `Point Cloud` -> `Mesh` workflow.
 The development of the `SketchEncoder-v5` model involved training on a large-scale dataset of paired sketch-3D samples. Our custom loss function combines Chamfer Distance with Semantic Consistency to ensure the resulting meshes preserve the artistic intent of the original sketch.
 
 > [!NOTE]
