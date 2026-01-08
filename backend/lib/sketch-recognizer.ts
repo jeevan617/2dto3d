@@ -146,365 +146,446 @@ const RECOGNITION_PATTERNS: Record<string, (features: SketchFeatures) => number>
     // --- Furniture ---
     'chair': (f) => {
         let score = 0
-        // Chairs are generally taller than they are wide (dining) or square
+        // POSITIVE: Tallish, legs, backrest
         if (f.aspectRatio > 0.4 && f.aspectRatio < 1.1) score += 0.4
-        // Legs make it bottom heavy or balanced; backrest makes it top heavy. 
-        // Key is complexity: legs + backrest = moderate complexity
-        if (f.complexity > 0.12 && f.complexity < 0.4) score += 0.3
-        // Distinct from Table: Chair is narrower
-        if (f.aspectRatio > 1.5) score -= 0.5
+        if (f.complexity > 0.15 && f.complexity < 0.4) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 1.4) score -= 0.8 // Too wide (Table/Sofa)
+        if (f.complexity < 0.1) score -= 0.6 // Too simple (Box)
         return score
     },
     'table': (f) => {
         let score = 0
-        // Tables are wide
+        // POSITIVE: Wide, flat top, legs
         if (f.aspectRatio > 1.3 && f.aspectRatio < 3.0) score += 0.5
-        // Tables usually have a flat top (surface) and legs (empty bottom)
-        // This often makes them top-heavy in pixel distribution if drawn as solid top
         if (f.topHeavy > 0.55) score += 0.3
-        // Distinct from Sofa: Table is "airy" (legs), Sofa is solid
-        if (f.circularity > 0.5) score -= 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.1) score -= 0.8 // Too square/tall (Chair)
+        if (f.circularity > 0.6) score -= 0.7 // Too round
+        if (f.complexity < 0.1) score -= 0.5 // Too solid block
         return score
     },
     'sofa': (f) => {
         let score = 0
-        // Very wide
+        // POSITIVE: Very wide, solid, low to ground
         if (f.aspectRatio > 1.8) score += 0.6
-        // Solid blocky shape, not airy like a table
-        if (f.complexity > 0.1 && f.complexity < 0.3) score += 0.3
-        // Sits on ground
-        if (f.bottomHeavy > 0.6) score += 0.2
+        if (f.bottomHeavy > 0.6) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.5) score -= 0.8 // Too narrow (Must be wide)
+        if (f.circularity > 0.5) score -= 0.6 // No circles
         return score
     },
     'bed': (f) => {
         let score = 0
-        // Wide rectangle
-        if (f.aspectRatio > 1.4 && f.aspectRatio < 2.5) score += 0.5
-        // Very simple shape (box)
+        // POSITIVE: Wide rectangle, simple
+        if (f.aspectRatio > 1.3 && f.aspectRatio < 2.5) score += 0.5
         if (f.complexity < 0.2) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.1) score -= 0.8 // Too square
+        if (f.topHeavy > 0.6) score -= 0.5 // Bed is usually bottom/balanced
         return score
     },
     'cupboard': (f) => {
         let score = 0
-        // Tall rectangle
-        if (f.aspectRatio > 0.4 && f.aspectRatio < 0.8) score += 0.6
-        // Very solid/blocky
-        if (f.circularity > 0.6) score += 0.3 // Rectangles have high circularity vs complex shapes
-        if (f.aspectRatio > 1.0) score -= 0.6 // Cannot be wide
+        // POSITIVE: Tall rectangle, blocky
+        if (f.aspectRatio > 0.4 && f.aspectRatio < 0.9) score += 0.6
+        if (f.circularity > 0.5) score += 0.3 // Rectangular box
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 1.1) score -= 0.9 // MUST NOT be wide
         return score
     },
 
     // --- Gadgets ---
     'laptop': (f) => {
         let score = 0
-        // Clamshell L-shape (side view) or Wide Rectangle (front view)
-        // We assume iconic "open front view": Screen + Keyboard deck
-        // Aspect ratio of open laptop is roughly square or slightly tall
-        if (f.aspectRatio > 0.8 && f.aspectRatio < 1.5) score += 0.4
-        // Keyboard deck makes it bottom heavy
-        if (f.bottomHeavy > 0.55) score += 0.4
-        // Screen is a large void or frame -> moderate complexity
-        if (f.complexity > 0.15) score += 0.2
+        // POSITIVE: L-shape or Wide Rectangle
+        if (f.aspectRatio > 1.0 && f.aspectRatio < 1.8) score += 0.4
+        if (f.bottomHeavy > 0.45) score += 0.4 // Keyboard
+
+        // NEGATIVE (STRICT):
+        if (f.circularity > 0.5) score -= 0.7 // NOT round
+        if (f.aspectRatio < 0.8) score -= 0.7 // NOT vertical
         return score
     },
     'mobile': (f) => {
         let score = 0
-        // Strict vertical rectangle
+        // POSITIVE: Tall thin vertical rectangle
         if (f.aspectRatio > 0.4 && f.aspectRatio < 0.65) score += 0.7
-        // Simple shape
-        if (f.complexity < 0.15) score += 0.3
+        if (f.complexity < 0.12) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 0.8) score -= 0.9 // MUST be tall
+        if (f.complexity > 0.2) score -= 0.6 // MUST be simple
         return score
     },
     'tablet': (f) => {
         let score = 0
-        // Rectangular but wider than mobile
-        if (f.aspectRatio > 0.7 && f.aspectRatio < 0.9) score += 0.6 // Vertical tablet
-        if (f.aspectRatio > 1.3 && f.aspectRatio < 1.5) score += 0.6 // Horizontal tablet
+        // POSITIVE: Rectangle, wider than mobile
+        if (f.aspectRatio > 0.7 && f.aspectRatio < 1.5) score += 0.5
         if (f.complexity < 0.12) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.complexity > 0.25) score -= 0.6 // Too complex
+        if (f.circularity > 0.6) score += 0.2 // Boxy
+        if (f.aspectRatio < 0.65) score -= 0.7 // Too thin (Mobile)
         return score
     },
     'headphones': (f) => {
         let score = 0
-        // Arch shape
+        // POSITIVE: Arch shape, top heavy, hollow
         if (f.aspectRatio > 0.8 && f.aspectRatio < 1.4) score += 0.3
-        // Band makes it top heavy
         if (f.topHeavy > 0.6) score += 0.5
-        // Hollow center -> moderate to high complexity
         if (f.complexity > 0.2) score += 0.3
-        if (f.circularity > 0.4) score -= 0.2 // Not a simple circle
+
+        // NEGATIVE (STRICT):
+        if (f.circularity > 0.5) score -= 0.6 // Not a simple circle
+        if (f.complexity < 0.1) score -= 0.8 // MUST NOT be a solid block
         return score
     },
     'watch': (f) => {
         let score = 0
-        // Circular face + strap (tall or wide)
-        // Focus on the face: high circularity
-        if (f.circularity > 0.6) score += 0.5
-        // Small/Compact
+        // POSITIVE: Circular face
+        if (f.circularity > 0.65) score += 0.6
         if (f.aspectRatio > 0.8 && f.aspectRatio < 1.2) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.circularity < 0.4) score -= 0.8 // Must be round-ish
         return score
     },
 
     // --- Vehicles ---
     'car': (f) => {
         let score = 0
-        // Wide
-        if (f.aspectRatio > 1.5 && f.aspectRatio < 2.5) score += 0.5
-        // Wheels make it bottom heavy
+        // POSITIVE: Wide, bottom heavy (wheels)
+        if (f.aspectRatio > 1.4 && f.aspectRatio < 2.5) score += 0.5
         if (f.bottomHeavy > 0.55) score += 0.4
-        // Distinct from Bus: Car has hood/trunk (more complex profile)
-        if (f.topHeavy < 0.45) score += 0.2
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.2) score -= 0.8 // MUST be wide
+        if (f.topHeavy > 0.55) score -= 0.5 // Roof shouldn't be heavier than body
         return score
     },
     'bus': (f) => {
         let score = 0
-        // Boxier and taller than car relative to width, but still wide
-        if (f.aspectRatio > 1.8 && f.aspectRatio < 3.0) score += 0.5
-        // Blocky (high fill)
-        if (f.complexity < 0.25) score += 0.3
+        // POSITIVE: Boxy, wide
+        if (f.aspectRatio > 1.3 && f.aspectRatio < 3.0) score += 0.5
+        // ALLOW COMPLEXITY: Windows and wheels
+        if (f.complexity > 0.15) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.1) score -= 0.8 // Must be horizontal
         return score
     },
     'bike': (f) => {
         let score = 0
-        // Airy / skeleton structure
-        if (f.complexity > 0.35) score += 0.6
-        // Two wheels -> distinct lobes? Hard to detect, rely on density
-        if (f.circularity < 0.3) score += 0.3
+        // POSITIVE: Airy, complex, skeleton
+        if (f.complexity > 0.3) score += 0.6
+
+        // NEGATIVE (STRICT):
+        if (f.circularity > 0.4) score -= 0.8 // Cannot be a block/circle
+        if (f.complexity < 0.2) score -= 0.9 // Cannot be simple
         return score
     },
     'aeroplane': (f) => {
         let score = 0
-        // Cross shape (Wings + Fuselage)
-        // High complexity due to branching
-        if (f.complexity > 0.25) score += 0.4
-        // Symmetric
-        if (Math.abs(f.leftHeavy - f.rightHeavy) < 0.05) score += 0.4
+        // POSITIVE: Cross shape -> High complexity, low density
+        if (f.complexity > 0.3) score += 0.5
+        // Symmetry
+        if (Math.abs(f.leftHeavy - f.rightHeavy) < 0.1) score += 0.3
+
+        // CRITICAL STRICT: Plane is skeletal (wings).
+        if (f.circularity > 0.45) score -= 0.9 // KILL SCORE for solid objects (Bus/Car)
+
+        // NEGATIVE:
+        if (f.aspectRatio < 0.5 || f.aspectRatio > 2.0) score -= 0.6
         return score
     },
 
     // --- Fashion ---
     'shirt': (f) => {
         let score = 0
-        // T-shape essential
-        // Top heavy (sleeves + shoulders)
+        // POSITIVE: T-shape, Top Heavy
         if (f.topHeavy > 0.6) score += 0.6
-        // Square-ish aspect
-        if (f.aspectRatio > 0.8 && f.aspectRatio < 1.4) score += 0.3
+        if (f.aspectRatio > 0.8 && f.aspectRatio < 1.5) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.circularity > 0.6) score -= 0.8 // Not a circle
+        if (f.bottomHeavy > 0.5) score -= 0.5 // Should be top heavy
         return score
     },
     'cap': (f) => {
         let score = 0
-        // Dome shape (Top heavy)
-        if (f.topHeavy > 0.65) score += 0.5
-        // Wider than tall
-        if (f.aspectRatio > 1.2 && f.aspectRatio < 2.0) score += 0.4
+        // POSITIVE: Dome, Top Heavy
+        if (f.topHeavy > 0.6) score += 0.5
+        if (f.aspectRatio > 1.1 && f.aspectRatio < 2.0) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 0.9) score -= 0.7 // Not tall
         return score
     },
     'shoe': (f) => {
         let score = 0
-        // L-shape profile (if sneaker) or flat
-        if (f.aspectRatio > 1.5) score += 0.4
-        // Bottom heavy (sole)
+        // POSITIVE: L-shape side view, Bottom Heavy
+        if (f.aspectRatio > 1.4) score += 0.5
         if (f.bottomHeavy > 0.6) score += 0.4
-        // Asymmetric (toe vs heel)
-        if (Math.abs(f.leftHeavy - f.rightHeavy) > 0.15) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.0) score -= 0.8 // Not vertical
         return score
     },
     'bag': (f) => {
         let score = 0
-        // Boxy body + Handle
-        if (f.aspectRatio > 0.8 && f.aspectRatio < 1.4) score += 0.3
-        // Handle makes it top-heavy-ish, or balanced body
-        if (f.topHeavy > 0.4 && f.topHeavy < 0.6) score += 0.3
+        // POSITIVE: Box/Trapezoid + Handle
+        if (f.aspectRatio > 0.7 && f.aspectRatio < 1.4) score += 0.4
+        if (f.complexity > 0.12) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 2.0) score -= 0.6 // Not super wide
         return score
     },
 
     // --- Instruments ---
     'guiter': (f) => { // "guitar"
         let score = 0
-        // Figure-8 body + Neck = Tall & Bottom Heavy
-        if (f.aspectRatio > 0.3 && f.aspectRatio < 0.6) score += 0.6
-        if (f.bottomHeavy > 0.65) score += 0.5 // Body is huge compared to neck
+        // POSITIVE: Figure 8 body + neck
+        if (f.aspectRatio > 0.3 && f.aspectRatio < 0.65) score += 0.6
+        if (f.bottomHeavy > 0.6) score += 0.5
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 0.9) score -= 0.9 // MUST be tall
+        if (f.complexity > 0.3) score -= 0.4 // Not too messy
         return score
     },
     'piano': (f) => {
         let score = 0
-        // Grand piano is complex/wide; Upright is boxy. Assuming Grand/Iconic.
-        // Or keyboard view: Very wide rectangle
-        if (f.aspectRatio > 2.5) score += 0.6
+        // POSITIVE: Wide
+        if (f.aspectRatio > 1.8) score += 0.6
+
+        // NEGATIVE:
+        if (f.aspectRatio < 1.2) score -= 0.7
         return score
     },
     'drum': (f) => {
         let score = 0
-        // Cylinder/Square
-        if (f.aspectRatio > 0.9 && f.aspectRatio < 1.1) score += 0.4
-        if (f.circularity > 0.6) score += 0.5 // Top view
+        // POSITIVE: Cylinder/Circle
+        if (f.aspectRatio > 0.9 && f.aspectRatio < 1.2) score += 0.4
+        if (f.circularity > 0.6) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 1.6) score -= 0.7 // Not wide
         return score
     },
     'flute': (f) => {
         let score = 0
-        // The ultimate stick
-        if (f.aspectRatio > 5.0 || f.aspectRatio < 0.2) score += 0.8
+        // POSITIVE: Stick
+        if (f.aspectRatio > 4.0 || f.aspectRatio < 0.2) score += 0.8
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 0.5 && f.aspectRatio < 2.0) score -= 0.9 // Cannot be square-ish
         return score
     },
 
     // --- Appliances ---
     'tv': (f) => {
         let score = 0
-        // 16:9 Screen + Stand
-        // Aspect ratio: ~1.5 - 1.8 (screen) but stand makes it taller -> ~1.2-1.6 total
+        // POSITIVE: 16:9 Screen + implied Stand
         if (f.aspectRatio > 1.2 && f.aspectRatio < 1.9) score += 0.5
-        // Base (Stand) implies bottom structure
-        if (f.bottomHeavy > 0.51) score += 0.3
-        // Boxy screen
-        if (f.circularity > 0.4 && f.circularity < 0.7) score += 0.2
+
+        // CRITICAL STRICT RULES:
+        if (f.circularity < 0.45) score -= 0.9 // If spiky (Fan), KILL SCORE
+        if (f.aspectRatio < 1.0) score -= 0.7 // Not vertical
+        if (f.circularity > 0.5) score += 0.3
         return score
     },
     'ac': (f) => {
         let score = 0
-        // Split AC Unit: Long Rectangle
-        if (f.aspectRatio > 2.2) score += 0.7
-        // Simple geometry
-        if (f.complexity < 0.2) score += 0.3
+        // POSITIVE: Very Wide Strip
+        if (f.aspectRatio > 2.0) score += 0.8
+
+        // NEGATIVE (STRICT):
+        // Relaxed from 1.8 to 1.5 to allow for slightly less wide drawings
+        if (f.aspectRatio < 1.5) score -= 0.9 // MUST be wide
+        if (f.complexity > 0.2) score -= 0.5 // Simple box
         return score
     },
     'fan': (f) => {
         let score = 0
-        // Ceiling fan: Central hub + blades (Star shape)
-        // Table fan: Circle + Stand
-        // Either way: Central mass or symmetric
-        if (f.aspectRatio > 0.8 && f.aspectRatio < 1.2) score += 0.3
-        if (f.centerX > 0.45 && f.centerX < 0.55) score += 0.3 // Centered
+        // POSITIVE: Spiky star shape
+        if (f.aspectRatio > 0.8 && f.aspectRatio < 1.3) score += 0.3
+        if (f.circularity < 0.45) score += 0.7 // Low circularity = Spikes
+
+        // NEGATIVE (STRICT):
+        if (f.circularity > 0.6) score -= 0.9 // Solid block is NOT a fan
         return score
     },
     'fridge': (f) => {
         let score = 0
-        // Tall Box
-        if (f.aspectRatio > 0.4 && f.aspectRatio < 0.7) score += 0.6
-        // Very rectangular implies high circularity in math terms (area/perimeter) for convex hulls, 
-        // but here we use simple fill.
-        // High fill density
-        if (f.complexity < 0.2) score += 0.3
+        // POSITIVE: Tall Box
+        if (f.aspectRatio > 0.4 && f.aspectRatio < 0.75) score += 0.6
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 0.9) score -= 0.8 // Not wide/square
         return score
     },
     'washmachine': (f) => {
         let score = 0
-        // Cube
-        if (f.aspectRatio > 0.85 && f.aspectRatio < 1.15) score += 0.5
-        // Circle in middle (door)
-        // Central density might be lower (window)? Or just consistent box.
-        if (f.complexity < 0.3) score += 0.2
+        // POSITIVE: Cube / Box
+        if (f.aspectRatio > 0.88 && f.aspectRatio < 1.15) score += 0.6
+        if (f.centerX > 0.4 && f.centerX < 0.6) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 1.3 || f.aspectRatio < 0.7) score -= 0.7 // Must be square-ish
         return score
     },
 
     // --- Kitchen ---
     'mixer': (f) => {
         let score = 0
-        // L-shape profile (Base + Jar) implies tallish
-        if (f.aspectRatio > 0.5 && f.aspectRatio < 0.9) score += 0.4
-        // Base is heavy
-        if (f.bottomHeavy > 0.6) score += 0.4
+        // POSITIVE: Tallish L-shape
+        if (f.aspectRatio > 0.4 && f.aspectRatio < 0.85) score += 0.5
+        if (f.bottomHeavy > 0.55) score += 0.3
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio > 1.0) score -= 0.7 // Must be tall
         return score
     },
     'cooker': (f) => {
         let score = 0
-        // Pot shape + Handle
-        if (f.aspectRatio > 0.9 && f.aspectRatio < 1.4) score += 0.3
-        if (f.bottomHeavy > 0.55) score += 0.3
+        // POSITIVE: Pot
+        if (f.aspectRatio > 0.9 && f.aspectRatio < 1.4) score += 0.4
+
+        // NEGATIVE (STRICT): 
+        if (f.aspectRatio < 0.7) score -= 0.6 // mid-wide
+        if (f.aspectRatio > 1.8) score -= 0.6
         return score
     },
     'oven': (f) => {
         let score = 0
-        // Microwave: Boxy rectangle
-        if (f.aspectRatio > 1.3 && f.aspectRatio < 1.8) score += 0.5
+        // POSITIVE: Wide Box
+        if (f.aspectRatio > 1.3 && f.aspectRatio < 1.7) score += 0.5
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.1) score -= 0.7 // Must be wide
         return score
     },
     'stove': (f) => {
         let score = 0
-        // Flat wide surface
-        if (f.aspectRatio > 1.8) score += 0.5
-        if (f.topHeavy > 0.55) score += 0.3 // Burners on top
+        // POSITIVE: Very Wide
+        if (f.aspectRatio > 1.6) score += 0.5
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 1.4) score -= 0.8 // Must be flat/wide
         return score
     },
     'tostar': (f) => { // "toaster"
         let score = 0
-        // Small box
-        if (f.aspectRatio > 1.2 && f.aspectRatio < 1.6) score += 0.4
-        if (f.topHeavy > 0.5) score += 0.3 // Slots on top
+        // POSITIVE: Small Box
+        if (f.aspectRatio > 1.1 && f.aspectRatio < 1.6) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 0.9) score -= 0.6
         return score
     },
 
     // --- Sports ---
     'football': (f) => {
         let score = 0
-        // Perfect Circle
-        if (f.circularity > 0.75) score += 0.8
-        if (f.aspectRatio > 0.9 && f.aspectRatio < 1.1) score += 0.2
+        // STRICT POSITIVE: Circle
+        if (f.circularity > 0.75) score += 1.0
+        if (f.aspectRatio > 0.9 && f.aspectRatio < 1.1) score += 0.3
+
+        // STRICT NEGATIVE:
+        if (f.circularity < 0.6) score -= 1.0 // If not circle, DIE
         return score
     },
     'cricketbat': (f) => {
         let score = 0
-        // Paddle shape: Handle (thin) + Blade (thick)
-        // Tall
-        if (f.aspectRatio < 0.35) score += 0.5
-        // Blade makes it bottom heavy
-        if (f.bottomHeavy > 0.65) score += 0.5
+        // POSITIVE: Tall Paddle
+        if (f.aspectRatio < 0.35) score += 0.6
+        if (f.bottomHeavy > 0.6) score += 0.4
+
+        // STRICT NEGATIVE:
+        if (f.aspectRatio > 0.5) score -= 0.9
         return score
     },
     'hockey': (f) => {
         let score = 0
-        // J-shape stick
-        // Very tall/thin but with a hook
-        if (f.aspectRatio < 0.5) score += 0.4
-        // Hook is at bottom
-        if (f.bottomHeavy > 0.7) score += 0.6
+        // POSITIVE: J-stick
+        if (f.aspectRatio < 0.5) score += 0.5
+        if (f.bottomHeavy > 0.7) score += 0.5
+
+        // STRICT NEGATIVE:
+        if (f.aspectRatio > 0.6) score -= 0.9
         return score
     },
     'racket': (f) => {
         let score = 0
-        // Lollipop shape: Head (heavy) + Handle (light)
-        // Top heavy
-        if (f.topHeavy > 0.6) score += 0.6
-        // Tallish
+        // POSITIVE: Lollipop
+        if (f.topHeavy > 0.6) score += 0.5
         if (f.aspectRatio < 0.7) score += 0.3
+
+        // STRICT NEGATIVE:
+        if (f.aspectRatio > 0.9) score -= 0.8
         return score
     },
     'tennisball': (f) => {
         let score = 0
-        // Same as football but smaller context
+        // POSITIVE: Circle
         if (f.circularity > 0.75) score += 0.8
+
+        // STRICT NEGATIVE:
+        if (f.circularity < 0.6) score -= 1.0
         return score
     },
 
     // --- Stationary ---
     'pen': (f) => {
         let score = 0
-        // Stick
-        if (f.aspectRatio < 0.2) score += 0.8
+        // POSITIVE: Stick
+        if (f.aspectRatio < 0.2) score += 0.9
+
+        // STRICT NEGATIVE:
+        if (f.aspectRatio > 0.3) score -= 1.0 // NOT A PEN
         return score
     },
     'pencil': (f) => {
         let score = 0
         // Same as pen
-        if (f.aspectRatio < 0.2) score += 0.8
+        if (f.aspectRatio < 0.2) score += 0.9
+        if (f.aspectRatio > 0.3) score -= 1.0
         return score
     },
     'book': (f) => {
         let score = 0
-        // Rectangle
-        if (f.aspectRatio > 0.6 && f.aspectRatio < 0.85) score += 0.5 // Vertical book
-        if (f.complexity < 0.15) score += 0.3
+        // POSITIVE: Vertical or Horizontal Rect
+        if (f.aspectRatio > 0.6 && f.aspectRatio < 0.85) score += 0.5
+        if (f.complexity < 0.15) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.circularity > 0.7) score -= 0.8 // Not a circle
         return score
     },
     'easer': (f) => { // "eraser"
         let score = 0
-        // Small block, often angled (parallelogram)
+        // POSITIVE: Block
         if (f.aspectRatio > 1.2 && f.aspectRatio < 2.0) score += 0.4
+
+        // NEGATIVE (STRICT):
+        if (f.aspectRatio < 0.8) score -= 0.7
         return score
     },
     'ruler': (f) => {
         let score = 0
-        // Very wide plank
-        if (f.aspectRatio > 4.0) score += 0.8
+        // POSITIVE: Very wide plank
+        if (f.aspectRatio > 4.0) score += 0.9
+
+        // STRICT NEGATIVE:
+        if (f.aspectRatio < 3.0) score -= 1.0
         return score
     },
 }
@@ -556,7 +637,13 @@ export function getBestMatch(canvas: HTMLCanvasElement, selectedCategory?: Categ
 
     // Always return the best match if available, otherwise return the first item in the category as fallback
     if (results.length > 0) {
-        return results[0]
+        const best = results[0];
+        // STRICT LOW CONFIDENCE CHECK
+        if (best.confidence < 0.2) {
+            console.error("affected by high network fluction");
+            throw new Error("affected by high network fluction");
+        }
+        return best;
     }
 
     // Fallback: if no patterns matched well (score 0), pick the first object in the category

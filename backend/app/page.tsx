@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import SketchCanvas from "@/components/sketch-canvas"
 import ModelLoader from "@/components/model-loader"
-import { getBestMatch } from "@/lib/sketch-recognizer"
+import { getBestMatch, recognizeSketch } from "@/lib/sketch-recognizer"
 import { getModelByName, getModelNamesForCategory, CATEGORIES, CATEGORY_LABELS, type ModelInfo, type Category } from "@/lib/model-registry"
 import { Sparkles, Box, Layers, Wand2 } from "lucide-react"
 
@@ -31,6 +31,7 @@ export default function Home() {
   // Network simulation state
   const [networkStatus, setNetworkStatus] = useState<string | null>(null)
   const [showNetworkWarning, setShowNetworkWarning] = useState(false)
+  const [activeGuide, setActiveGuide] = useState<string | null>(null)
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category as Category)
@@ -43,6 +44,7 @@ export default function Home() {
     setProgress3D(0)
     setNetworkStatus(null)
     setShowNetworkWarning(false)
+    setActiveGuide(null)
   }
 
   // Helper to simulate progress bar with network interruptions
@@ -96,6 +98,7 @@ export default function Home() {
     setGenerationStage('idle')
     setNetworkStatus(null)
     setShowNetworkWarning(false)
+    // Don't reset active guide here so they can redraw if failed
 
     setIsProcessing(true)
     setProcessingStep("Analyzing sketch...")
@@ -104,12 +107,50 @@ export default function Home() {
     await new Promise(r => setTimeout(r, 1000))
 
     // Recognize matching object (relaxed matching)
-    const result = getBestMatch(canvas, selectedCategory)
+    // Recognize matching object (relaxed matching)
+    // Recognize matching object (relaxed matching)
+    let result: any = null;
+    const allResults = recognizeSketch(canvas, selectedCategory);
 
-    // Fallback logic
+    // SMART GUIDE LOGIC:
+    // If user explicitly selected a guide, we honor that choice above all else EXCEPT empty canvas
+    // This honors "when tap that atleast match that to the generation"
+    if (activeGuide) {
+      // activeGuide is now the object name key (e.g. "ac", "fan")
+      console.log("User explicit guide selection:", activeGuide);
+
+      // We artificially construct a "perfect" result for the selected object
+      // This ensures downstream logic picks it up without "low confidence" errors
+      result = {
+        objectName: activeGuide,
+        confidence: 1.0, // Artificial confidence
+        category: selectedCategory!
+      };
+    } else {
+      // Standard AI recognition if no guide selected
+      if (allResults.length > 0) {
+        result = allResults[0];
+      }
+    }
+
+    // Calculate low confidence ONLY if we are using AI (no guide)
+    // If guide is active, we force confidence to 1.0 so this never triggers
+    // "result is varieed" -> Low confidence / ambiguous match
+    const lowConfidence = !activeGuide && (!result || result.confidence < 0.35);
+
+    if (lowConfidence) {
+      // Stop and show "disclaimer"
+      console.error("affected by high network fluction");
+      alert("Disclaimer: Affected by high network fluctuation");
+      setProcessingStep("Error: Affected by high network fluctuation");
+      setIsProcessing(false);
+      setNetworkStatus("Connection Unstable");
+      setShowNetworkWarning(true);
+      return;
+    }
+
+    // Fallback/Selection logic
     let matchedModel: ModelInfo | undefined
-    // Check confidence - if low (or fallback used), treat as "wrong/unstable" result
-    const lowConfidence = !result || result.confidence < 0.4
 
     if (result) {
       matchedModel = getModelByName(result.objectName)
@@ -190,16 +231,20 @@ export default function Home() {
           {selectedCategory && (
             <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <p className="text-sm font-medium text-blue-800 mb-2">
-                Available base shapes in {CATEGORY_LABELS[selectedCategory]}:
+                Tap an object to enable drawing guide:
               </p>
               <div className="flex flex-wrap gap-2">
                 {availableObjects.map((obj) => (
-                  <span
+                  <button
                     key={obj}
-                    className="px-2 py-1 bg-white border border-blue-200 rounded text-xs capitalize"
+                    onClick={() => setActiveGuide(obj)}
+                    className={`px-3 py-1.5 border rounded-full text-xs capitalize transition-all ${activeGuide === obj
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-105'
+                      : 'bg-white border-blue-200 hover:bg-blue-50 text-gray-700'
+                      }`}
                   >
                     {obj}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -218,7 +263,12 @@ export default function Home() {
 
             {selectedCategory ? (
               <>
-                <SketchCanvas onSketchComplete={handleSketchComplete} width={350} height={350} />
+                <SketchCanvas
+                  onSketchComplete={handleSketchComplete}
+                  width={350}
+                  height={350}
+                  guideObject={activeGuide}
+                />
 
                 {isProcessing && (
                   <div className="mt-4 p-3 bg-blue-50 rounded-md flex items-center justify-center gap-2">

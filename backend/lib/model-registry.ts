@@ -30,7 +30,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo> = {
         name: 'Fridge',
         category: 'electric_apppliance',
         modelPath: '/assets/.v0-internal-data/electric_apppliance/fridge.glb',
-        previewPath: '/assets/.v0-internal-data/electric_apppliance/fridge.glb',
+        previewPath: '/assets/.v0-internal-data/electric_apppliance/frige.png',
         fileType: 'glb'
     },
     'tv': {
